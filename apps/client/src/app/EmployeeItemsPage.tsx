@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   IconButton,
@@ -14,24 +14,36 @@ import {
 import { Delete, Edit } from '@mui/icons-material';
 import EmployeeItemForm from './EmployeeItemForm';
 import { EmployeeItem } from './EmployeeItem.types';
+import employeeItemApiService from './EmployeeItemService';
 
 const EmployeeItemsPage: React.FC = () => {
   const [items, setItems] = useState<EmployeeItem[]>([]);
   const [currentItem, setCurrentItem] = useState<EmployeeItem | null>(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  useEffect(() => {
+    employeeItemApiService.getItemsList().then((items) => setItems(items));
+  }, []);
+
   const handleSaveItem = (item: EmployeeItem) => {
     if (isEditing) {
-      setItems(items.map((i) => (i._id === item._id ? item : i)));
+      employeeItemApiService.updateItem(item._id as string, item).then(() => {
+        setItems(items.map((i) => (i._id === item._id ? item : i)));
+      });
       setIsEditing(false);
     } else {
-      setItems([...items, { ...item, _id: '' }]);
+      employeeItemApiService.createItem(item).then(() => {
+        setItems([...items, { ...item, _id: '' }]);
+      });
     }
+
     setCurrentItem(null);
   };
 
   const handleDeleteItem = (id: string | undefined) => {
-    setItems(items.filter((item) => item._id !== id));
+    employeeItemApiService.deleteItem(id as string).then(() => {
+      setItems(items.filter((item) => item._id !== id));
+    });
   };
 
   const handleEditItem = (item: EmployeeItem) => {
