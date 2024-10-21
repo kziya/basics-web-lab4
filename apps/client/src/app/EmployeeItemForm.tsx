@@ -1,13 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
-
-interface EmployeeItem {
-  id?: number;
-  surname: string;
-  roomNumber: string;
-  itemName: string;
-  issueDate: string;
-}
+import { EmployeeItem } from './EmployeeItem.types';
 
 interface EmployeeItemFormProps {
   onSave: (item: EmployeeItem) => void;
@@ -39,7 +32,7 @@ const EmployeeItemForm: React.FC<EmployeeItemFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave({ ...formData, id: isEditing ? item?.id : undefined });
+    onSave({ ...formData, _id: isEditing ? item?._id : undefined });
     setFormData({ surname: '', roomNumber: '', itemName: '', issueDate: '' }); // Reset form
   };
 

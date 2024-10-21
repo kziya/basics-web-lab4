@@ -13,14 +13,7 @@ import {
 } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
 import EmployeeItemForm from './EmployeeItemForm';
-
-interface EmployeeItem {
-  id?: number;
-  surname: string;
-  roomNumber: string;
-  itemName: string;
-  issueDate: string;
-}
+import { EmployeeItem } from './EmployeeItem.types';
 
 const EmployeeItemsPage: React.FC = () => {
   const [items, setItems] = useState<EmployeeItem[]>([]);
@@ -29,16 +22,16 @@ const EmployeeItemsPage: React.FC = () => {
 
   const handleSaveItem = (item: EmployeeItem) => {
     if (isEditing) {
-      setItems(items.map((i) => (i.id === item.id ? item : i)));
+      setItems(items.map((i) => (i._id === item._id ? item : i)));
       setIsEditing(false);
     } else {
-      setItems([...items, { ...item, id: Date.now() }]);
+      setItems([...items, { ...item, _id: '' }]);
     }
     setCurrentItem(null);
   };
 
-  const handleDeleteItem = (id: number | undefined) => {
-    setItems(items.filter((item) => item.id !== id));
+  const handleDeleteItem = (id: string | undefined) => {
+    setItems(items.filter((item) => item._id !== id));
   };
 
   const handleEditItem = (item: EmployeeItem) => {
@@ -71,7 +64,7 @@ const EmployeeItemsPage: React.FC = () => {
           </TableHead>
           <TableBody>
             {items.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow key={item._id}>
                 <TableCell>{item.surname}</TableCell>
                 <TableCell>{item.roomNumber}</TableCell>
                 <TableCell>{item.itemName}</TableCell>
@@ -80,7 +73,7 @@ const EmployeeItemsPage: React.FC = () => {
                   <IconButton onClick={() => handleEditItem(item)}>
                     <Edit />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteItem(item.id)}>
+                  <IconButton onClick={() => handleDeleteItem(item._id)}>
                     <Delete />
                   </IconButton>
                 </TableCell>
